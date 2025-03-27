@@ -35,189 +35,95 @@ const useTestState = () => {
   };
 };
 
-// 컴포넌트 분리
-const StartScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => (
-  <div className="text-center py-12">
-    <div className="text-5xl mb-6">💘</div>
-    <h1 className="text-3xl font-bold text-purple-800 mb-4">당신의 결핍은? 현실 연애 MBTI</h1>
-    <p className="text-gray-700 text-lg leading-relaxed max-w-md mx-auto">
-      &ldquo;돈이 없어서, 못생겨서, 예민해서 연애가 어려운 걸까?&rdquo;
-      <br />
-      진짜 이유는 당신의 결핍 속에 숨어 있습니다.
-      <br /><br />
-      이 테스트는 당신의 <strong className="text-purple-700">경제적 안정감</strong>, <strong className="text-purple-700">지적 자존감</strong>,
-      <strong className="text-purple-700">외모 인식</strong>, <strong className="text-purple-700">성격 유형</strong>을 바탕으로 현실적인 성향을 파악합니다.
-      <br /><br />
-      기존 MBTI처럼 성격만 보는 것이 아니라, 사회적 현실과 자기 인식을 포함한
-      더 <strong className="text-purple-700">입체적이고 솔직한 자아 탐색</strong>이 가능합니다.
-      <br />
-      나의 결핍과 강점을 통합적으로 이해하고 싶다면 이 테스트가 큰 도움이 될 거예요.
-    </p>
-    <ul className="text-sm text-gray-600 text-left max-w-md mx-auto mt-6 space-y-1">
-      <li>✅ 4가지 현실 지표 기반 자가진단</li>
-      <li>✅ 나의 결핍과 강점 분석</li>
-      <li>✅ 나와 맞는 연애 궁합까지 제안!</li>
-    </ul>
-    <p className="mt-4 text-sm text-gray-500">총 문항 수: 20개 | 예상 소요 시간: 약 3분</p>
-    <details className="mt-4 text-xs text-gray-400">
-      <summary className="cursor-pointer text-purple-600 underline">관련 연구 보기</summary>
-      <div className="mt-2">
-        이 테스트는 MBTI와 결핍 이론을 결합하여 현대 사회의 연애 패턴을 분석합니다.
-        경제적 안정감, 지적 자존감, 외모 인식, 성격 유형이 연애 관계에 미치는 영향을 연구한 결과를 바탕으로 제작되었습니다.
-      </div>
-    </details>
-    <Button 
-      onClick={onStart} 
-      className="mt-8 px-10 py-3 !bg-purple-300 text-white rounded-md hover:!bg-purple-700 transition"
-    >
-      시작하기
-    </Button>
+const Header = () => (
+  <div className="bg-gradient-to-r from-purple-400 to-purple-600 rounded-2xl p-6 mb-8 shadow-lg transform hover:scale-[1.02] transition-all">
+    <h1 className="text-center text-3xl font-black text-white drop-shadow-sm">
+      💘 당신의 결핍은? 현실 연애 MBTI
+    </h1>
   </div>
 );
 
-const QuestionScreen: React.FC<{
+const StartScreen = ({ onStart }: { onStart: () => void }) => (
+  <div className="max-w-2xl mx-auto p-6">
+    <Header />
+    <div className="bg-white rounded-2xl p-8 shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">테스트 시작하기</h2>
+      <p className="text-gray-600 mb-8">
+        이 테스트는 당신의 연애 스타일과 결핍을 분석하여 현실적인 MBTI 유형을 찾아줍니다.
+        약 3분 정도 소요됩니다.
+      </p>
+      <Button onClick={onStart} className="w-full !bg-purple-300 text-gray-800 hover:!bg-purple-700 transition">
+        테스트 시작하기
+      </Button>
+    </div>
+  </div>
+);
+
+const QuestionScreen = ({ 
+  currentQuestion,
+  currentIndex,
+  onChoice,
+  onBack
+}: { 
   currentQuestion: typeof questions[0];
   currentIndex: number;
   onChoice: (index: number) => void;
   onBack: () => void;
-}> = ({ currentQuestion, currentIndex, onChoice, onBack }) => (
-  <div className="bg-white rounded-lg shadow-md p-8 border border-pink-100 transition-transform hover:shadow-lg">
-    <p className="font-medium text-gray-800 text-lg mb-6">{currentIndex + 1}. 다음 중 더 공감되는 문장을 골라주세요.</p>
-    {currentQuestion.options.map((option, index) => (
-      <Button
-        key={index}
-        onClick={() => onChoice(index)}
-        className="w-full mb-3 text-base py-6 hover:bg-purple-50 hover:border-purple-500 transition-all duration-200 border-2 text-gray-900 bg-white"
-      > 
-        {option}
-      </Button>
-    ))}
-    <div className="mt-8 text-sm text-gray-600 text-center">
-      문항 {currentIndex + 1} / {questions.length}
-      <div className="w-full h-2 bg-purple-100 rounded-full mt-3">
-        <div
-          className="h-2 bg-purple-500 rounded-full transition-all duration-300"
-          style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
-        ></div>
+}) => (
+  <div className="max-w-2xl mx-auto p-6">
+    <Header />
+    <div className="bg-white rounded-2xl p-8 shadow-lg">
+      <div className="flex justify-between items-center mb-6">
+        <Button onClick={onBack} className="text-gray-600 hover:text-gray-900">
+          ← 이전
+        </Button>
+        <span className="text-sm text-gray-500">
+          {currentIndex + 1}/{questions.length}
+        </span>
       </div>
-    </div>
-    <div className="mt-6 flex justify-center">
-      <Button
-        onClick={onBack}
-        className="text-gray-600 hover:text-purple-600 transition-colors"
-      >
-        ← 뒤로가기
-      </Button>
+      <h2 className="text-2xl font-bold text-gray-800 mb-8">
+        {currentQuestion.category} 관련 질문
+      </h2>
+      <div className="space-y-4">
+        {currentQuestion.options.map((option: string, index: number) => (
+          <Button
+            key={index}
+            onClick={() => onChoice(index)}
+            className="w-full text-left !bg-white text-gray-800 hover:!bg-purple-100 transition"
+          >
+            {option}
+          </Button>
+        ))}
+      </div>
     </div>
   </div>
 );
 
-const ResultScreen: React.FC<{
-  resultType: ResultType;
+const ResultScreen = ({ 
+  result, 
+  onReset,
+  onShare 
+}: { 
+  result: string;
   onReset: () => void;
-}> = ({ resultType, onReset }) => {
-  const [showCopied, setShowCopied] = useState(false);
-  const router = useRouter();
-
-  const handleShare = async () => {
-    try {
-      const shareUrl = `${window.location.origin}/?result=${resultType}`;
-      await navigator.clipboard.writeText(shareUrl);
-      setShowCopied(true);
-      setTimeout(() => setShowCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
-
-  const handleTypeClick = (type: string) => {
-    router.push(`/?result=${type}`);
-  };
-
-  return (
-    <div className="text-center py-12 px-4">
-      <h2 className="text-3xl font-bold text-purple-800 mb-6">당신의 결핍은? 현실 연애 MBTI</h2>
-      <p className="text-5xl mt-6 text-purple-900 font-bold">{resultType}</p>
-      <div className="text-7xl mt-8">
-        {typeDescriptions[resultType]?.match(/^([⌚-🧿-􏰀-])/u)?.[0] || "💡"}
-      </div>
-      <p className="mt-8 text-xl text-gray-700 leading-relaxed whitespace-pre-line max-w-2xl mx-auto">{typeDescriptions[resultType]}</p>
-      <p className="mt-6 text-lg text-gray-600 leading-relaxed whitespace-pre-line max-w-2xl mx-auto">
-        💡 결핍에도 장점은 존재합니다.
-        금전적 결핍은 검소함과 현실 감각을, 지적 열등감은 감성적 직관과 공감 능력을,
-        외모 콤플렉스는 내면의 가치에 대한 집중을, 감정적 민감성은 깊은 감정 이해와 섬세함을 키우는 자산이 될 수 있어요.
-      </p>
-      <div className="mt-8">
-        <p className="text-xl text-gray-800 font-semibold mb-4">✅ 잘 맞는 유형</p>
-        <ul className="text-base text-gray-700 space-y-2 max-w-md mx-auto">
-          {compatibilityMap[resultType]?.good.map((type) => (
-            <li 
-              key={type} 
-              className="bg-purple-50 p-3 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors"
-              onClick={() => handleTypeClick(type)}
-            >
-              💘 <strong>{type}</strong>: {typeDescriptions[type]?.split('💘')[1]?.trim() || '...'}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-8">
-        <p className="text-xl text-gray-800 font-semibold mb-4">❌ 충돌이 잦은 유형</p>
-        <ul className="text-base text-gray-700 space-y-2 max-w-md mx-auto">
-          {compatibilityMap[resultType]?.bad.map((type) => (
-            <li 
-              key={type} 
-              className="bg-red-50 p-3 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
-              onClick={() => handleTypeClick(type)}
-            >
-              ⚡ <strong>{type}</strong>: {typeDescriptions[type]?.split('💘')[1]?.trim() || '...'}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <Button
-        onClick={onReset}
-        className="mt-10 px-8 py-4 !bg-purple-300 text-white rounded-lg hover:!bg-purple-700 transition-all duration-200 text-lg"
-      >
-        처음으로 돌아가기
-      </Button>
-
-      <div className="mt-8">
-        <Button
-          onClick={handleShare}
-          className="px-6 py-3 bg-white text-purple-600 border-2 border-purple-300 rounded-lg hover:bg-purple-50 transition-all duration-200"
-        >
-          {showCopied ? '✓ 복사 완료!' : '🔗 결과 공유하기'}
+  onShare: () => void;
+}) => (
+  <div className="max-w-2xl mx-auto p-6">
+    <Header />
+    <div className="bg-white rounded-2xl p-8 shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">당신의 현실 연애 MBTI</h2>
+      <div className="text-4xl font-bold text-purple-600 mb-8 text-center">{result}</div>
+      <div className="space-y-4">
+        <Button onClick={onShare} className="w-full !bg-purple-300 text-gray-800 hover:!bg-purple-700 transition">
+          결과 공유하기
+        </Button>
+        <Button onClick={onReset} className="w-full !bg-white text-gray-800 hover:!bg-purple-100 transition">
+          처음으로 돌아가기
         </Button>
       </div>
-
-      <details className="mt-12">
-        <summary className="cursor-pointer text-xl font-semibold text-purple-700 hover:text-purple-800 transition-colors">전체 궁합표 보기</summary>
-        <div className="overflow-x-auto mt-6">
-          <table className="min-w-full border text-base text-left">
-            <thead className="bg-purple-100">
-              <tr>
-                <th className="px-6 py-4 border">유형</th>
-                <th className="px-6 py-4 border">잘 맞는 유형</th>
-                <th className="px-6 py-4 border">충돌 유형</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(compatibilityMap).map(([type, { good, bad }]) => (
-                <tr key={type} className="border-b hover:bg-purple-50 transition-colors">
-                  <td className="px-6 py-4 border font-semibold text-purple-800">{type}</td>
-                  <td className="px-6 py-4 border text-green-700">{good.join(', ')}</td>
-                  <td className="px-6 py-4 border text-red-600">{bad.join(', ')}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </details>
     </div>
-  );
-};
+  </div>
+);
 
 export default function RealisticMBTITest() {
   const router = useRouter();
@@ -303,13 +209,23 @@ export default function RealisticMBTITest() {
 
   const resultType = showResult ? (getResultFromUrl() || getResultType()) : '';
 
+  const handleShare = async () => {
+    try {
+      const shareUrl = `${window.location.origin}/?result=${resultType}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setShowResult(true);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   return (
     <div id="webcrumbs" className="w-full flex justify-center">
       <div className="w-full max-w-2xl bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-6 font-sans">
         {!startTest ? (
           <StartScreen onStart={() => setStartTest(true)} />
         ) : showResult ? (
-          <ResultScreen resultType={resultType} onReset={handleReset} />
+          <ResultScreen result={resultType} onReset={handleReset} onShare={handleShare} />
         ) : (
           <QuestionScreen
             currentQuestion={questions[currentIndex]}
