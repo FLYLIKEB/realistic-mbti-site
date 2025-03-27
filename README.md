@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 현실 연애 MBTI 테스트
 
-## Getting Started
+당신의 결핍은? 현실 연애 MBTI는 기존 MBTI와 달리, 현대 사회의 연애 패턴을 더 현실적으로 분석하는 테스트입니다.
 
-First, run the development server:
+## 🌟 주요 특징
+
+- **4가지 현실 지표 기반 분석**
+  - 경제적 안정감 (금전)
+  - 지적 자존감 (지성)
+  - 외모 인식 (외모)
+  - 성격 유형 (성격)
+
+- **입체적인 자아 탐색**
+  - 사회적 현실과 자기 인식을 포함한 솔직한 분석
+  - 결핍과 강점을 통합적으로 이해
+
+- **연애 궁합 분석**
+  - 잘 맞는 유형과 충돌이 잦은 유형 제시
+  - 각 유형별 상세한 설명과 특징 제공
+
+## 🎯 테스트 구성
+
+- 총 20개의 문항
+- 예상 소요 시간: 약 3분
+- 각 문항은 4가지 현실 지표 중 하나에 해당
+- 결과는 16가지 유형 중 하나로 분류
+
+## 💝 결과 유형
+
+결과는 다음 4가지 지표의 조합으로 16가지 유형이 나옵니다:
+
+- **금전**: P (풍요로운) / R (현실적인)
+- **지성**: F (똑똑한) / S (성실한)
+- **외모**: U (우아한) / H (호감적인)
+- **성격**: N (나르시스트) / A (안정적인)
+
+## 🔗 공유 기능
+
+- 테스트 결과를 URL로 공유 가능
+- 친구들과 결과를 비교하고 궁합을 확인 가능
+- 각 유형별 상세 설명과 특징 제공
+
+## 🛠 기술 스택
+
+- Next.js 13+
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+
+## 🚀 시작하기
 
 ```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# 프로덕션 빌드
+npm run build
+
+# 프로덕션 서버 실행
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📝 라이선스
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+이 프로젝트는 MIT 라이선스를 따릅니다.
