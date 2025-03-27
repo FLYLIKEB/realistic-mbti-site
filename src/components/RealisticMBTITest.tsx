@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { questions } from "@/data/questions"
 import { typeDescriptions } from "@/data/typeDescriptions"
 import { compatibilityMap } from "@/data/compatibility"
+import { useRouter, useSearchParams } from "next/navigation"
 
 // 타입 정의
 type Category = '금전' | '지성' | '외모' | '성격';
@@ -65,7 +66,10 @@ const StartScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => (
         경제적 안정감, 지적 자존감, 외모 인식, 성격 유형이 연애 관계에 미치는 영향을 연구한 결과를 바탕으로 제작되었습니다.
       </div>
     </details>
-    <Button onClick={onStart} className="mt-8 px-10 py-3 bg-purple-300 text-white rounded-md hover:bg-purple-700 transition">
+    <Button 
+      onClick={onStart} 
+      className="mt-8 px-10 py-3 !bg-purple-300 text-white rounded-md hover:!bg-purple-700 transition"
+    >
       시작하기
     </Button>
   </div>
@@ -78,15 +82,7 @@ const QuestionScreen: React.FC<{
   onBack: () => void;
 }> = ({ currentQuestion, currentIndex, onChoice, onBack }) => (
   <div className="bg-white rounded-lg shadow-md p-8 border border-pink-100 transition-transform hover:shadow-lg">
-    <div className="flex justify-between items-center mb-6">
-      <Button
-        onClick={onBack}
-        className="text-gray-600 hover:text-purple-600 transition-colors"
-      >
-        ← 뒤로가기
-      </Button>
-      <p className="font-medium text-gray-800 text-lg">{currentIndex + 1}. 다음 중 더 공감되는 문장을 골라주세요.</p>
-    </div>
+    <p className="font-medium text-gray-800 text-lg mb-6">{currentIndex + 1}. 다음 중 더 공감되는 문장을 골라주세요.</p>
     {currentQuestion.options.map((option, index) => (
       <Button
         key={index}
@@ -105,80 +101,127 @@ const QuestionScreen: React.FC<{
         ></div>
       </div>
     </div>
+    <div className="mt-6 flex justify-center">
+      <Button
+        onClick={onBack}
+        className="text-gray-600 hover:text-purple-600 transition-colors"
+      >
+        ← 뒤로가기
+      </Button>
+    </div>
   </div>
 );
 
 const ResultScreen: React.FC<{
   resultType: ResultType;
   onReset: () => void;
-}> = ({ resultType, onReset }) => (
-  <div className="text-center py-12 px-4">
-    <h2 className="text-3xl font-bold text-purple-800 mb-6">당신의 결핍은? 현실 연애 MBTI</h2>
-    <p className="text-5xl mt-6 text-purple-900 font-bold">{resultType}</p>
-    <div className="text-7xl mt-8">
-      {typeDescriptions[resultType]?.match(/^([⌚-🧿-􏰀-])/u)?.[0] || "💡"}
-    </div>
-    <p className="mt-8 text-xl text-gray-700 leading-relaxed whitespace-pre-line max-w-2xl mx-auto">{typeDescriptions[resultType]}</p>
-    <p className="mt-6 text-lg text-gray-600 leading-relaxed whitespace-pre-line max-w-2xl mx-auto">
-      💡 결핍에도 장점은 존재합니다.
-      금전적 결핍은 검소함과 현실 감각을, 지적 열등감은 감성적 직관과 공감 능력을,
-      외모 콤플렉스는 내면의 가치에 대한 집중을, 감정적 민감성은 깊은 감정 이해와 섬세함을 키우는 자산이 될 수 있어요.
-    </p>
-    <div className="mt-8">
-      <p className="text-xl text-gray-800 font-semibold mb-4">✅ 잘 맞는 유형</p>
-      <ul className="text-base text-gray-700 space-y-2 max-w-md mx-auto">
-        {compatibilityMap[resultType]?.good.map((type) => (
-          <li key={type} className="bg-purple-50 p-3 rounded-lg">
-            💘 <strong>{type}</strong>: {typeDescriptions[type]?.split('💘')[1]?.trim() || '...'}
-          </li>
-        ))}
-      </ul>
-    </div>
+}> = ({ resultType, onReset }) => {
+  const [showCopied, setShowCopied] = useState(false);
+  const router = useRouter();
 
-    <div className="mt-8">
-      <p className="text-xl text-gray-800 font-semibold mb-4">❌ 충돌이 잦은 유형</p>
-      <ul className="text-base text-gray-700 space-y-2 max-w-md mx-auto">
-        {compatibilityMap[resultType]?.bad.map((type) => (
-          <li key={type} className="bg-red-50 p-3 rounded-lg">
-            ⚡ <strong>{type}</strong>: {typeDescriptions[type]?.split('💘')[1]?.trim() || '...'}
-          </li>
-        ))}
-      </ul>
-    </div>
-    <Button
-      onClick={onReset}
-      className="mt-10 px-8 py-10 bg-purple-300 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-lg"
-    >
-      처음으로 돌아가기
-    </Button>
+  const handleShare = async () => {
+    try {
+      const shareUrl = `${window.location.origin}/?result=${resultType}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setShowCopied(true);
+      setTimeout(() => setShowCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
-    <details className="mt-12">
-      <summary className="cursor-pointer text-xl font-semibold text-purple-700 hover:text-purple-800 transition-colors">전체 궁합표 보기</summary>
-      <div className="overflow-x-auto mt-6">
-        <table className="min-w-full border text-base text-left">
-          <thead className="bg-purple-100">
-            <tr>
-              <th className="px-6 py-4 border">유형</th>
-              <th className="px-6 py-4 border">잘 맞는 유형</th>
-              <th className="px-6 py-4 border">충돌 유형</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(compatibilityMap).map(([type, { good, bad }]) => (
-              <tr key={type} className="border-b hover:bg-purple-50 transition-colors">
-                <td className="px-6 py-4 border font-semibold text-purple-800">{type}</td>
-                <td className="px-6 py-4 border text-green-700">{good.join(', ')}</td>
-                <td className="px-6 py-4 border text-red-600">{bad.join(', ')}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  const handleTypeClick = (type: string) => {
+    router.push(`/?result=${type}`);
+  };
+
+  return (
+    <div className="text-center py-12 px-4">
+      <h2 className="text-3xl font-bold text-purple-800 mb-6">당신의 결핍은? 현실 연애 MBTI</h2>
+      <p className="text-5xl mt-6 text-purple-900 font-bold">{resultType}</p>
+      <div className="text-7xl mt-8">
+        {typeDescriptions[resultType]?.match(/^([⌚-🧿-􏰀-])/u)?.[0] || "💡"}
       </div>
-    </details>
-  </div>
-);
+      <p className="mt-8 text-xl text-gray-700 leading-relaxed whitespace-pre-line max-w-2xl mx-auto">{typeDescriptions[resultType]}</p>
+      <p className="mt-6 text-lg text-gray-600 leading-relaxed whitespace-pre-line max-w-2xl mx-auto">
+        💡 결핍에도 장점은 존재합니다.
+        금전적 결핍은 검소함과 현실 감각을, 지적 열등감은 감성적 직관과 공감 능력을,
+        외모 콤플렉스는 내면의 가치에 대한 집중을, 감정적 민감성은 깊은 감정 이해와 섬세함을 키우는 자산이 될 수 있어요.
+      </p>
+      <div className="mt-8">
+        <p className="text-xl text-gray-800 font-semibold mb-4">✅ 잘 맞는 유형</p>
+        <ul className="text-base text-gray-700 space-y-2 max-w-md mx-auto">
+          {compatibilityMap[resultType]?.good.map((type) => (
+            <li 
+              key={type} 
+              className="bg-purple-50 p-3 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors"
+              onClick={() => handleTypeClick(type)}
+            >
+              💘 <strong>{type}</strong>: {typeDescriptions[type]?.split('💘')[1]?.trim() || '...'}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-8">
+        <p className="text-xl text-gray-800 font-semibold mb-4">❌ 충돌이 잦은 유형</p>
+        <ul className="text-base text-gray-700 space-y-2 max-w-md mx-auto">
+          {compatibilityMap[resultType]?.bad.map((type) => (
+            <li 
+              key={type} 
+              className="bg-red-50 p-3 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
+              onClick={() => handleTypeClick(type)}
+            >
+              ⚡ <strong>{type}</strong>: {typeDescriptions[type]?.split('💘')[1]?.trim() || '...'}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Button
+        onClick={onReset}
+        className="mt-10 px-8 py-4 !bg-purple-300 text-white rounded-lg hover:!bg-purple-700 transition-all duration-200 text-lg"
+      >
+        처음으로 돌아가기
+      </Button>
+
+      <div className="mt-8">
+        <Button
+          onClick={handleShare}
+          className="px-6 py-3 bg-white text-purple-600 border-2 border-purple-300 rounded-lg hover:bg-purple-50 transition-all duration-200"
+        >
+          {showCopied ? '✓ 복사 완료!' : '🔗 결과 공유하기'}
+        </Button>
+      </div>
+
+      <details className="mt-12">
+        <summary className="cursor-pointer text-xl font-semibold text-purple-700 hover:text-purple-800 transition-colors">전체 궁합표 보기</summary>
+        <div className="overflow-x-auto mt-6">
+          <table className="min-w-full border text-base text-left">
+            <thead className="bg-purple-100">
+              <tr>
+                <th className="px-6 py-4 border">유형</th>
+                <th className="px-6 py-4 border">잘 맞는 유형</th>
+                <th className="px-6 py-4 border">충돌 유형</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(compatibilityMap).map(([type, { good, bad }]) => (
+                <tr key={type} className="border-b hover:bg-purple-50 transition-colors">
+                  <td className="px-6 py-4 border font-semibold text-purple-800">{type}</td>
+                  <td className="px-6 py-4 border text-green-700">{good.join(', ')}</td>
+                  <td className="px-6 py-4 border text-red-600">{bad.join(', ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  );
+};
 
 export default function RealisticMBTITest() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     startTest,
     setStartTest,
@@ -190,6 +233,20 @@ export default function RealisticMBTITest() {
     setShowResult,
   } = useTestState();
 
+  // URL 파라미터에서 결과 타입을 가져오는 함수
+  const getResultFromUrl = () => {
+    return searchParams.get('result');
+  };
+
+  // 컴포넌트 마운트 시 URL 파라미터 확인
+  useEffect(() => {
+    const resultFromUrl = getResultFromUrl();
+    if (resultFromUrl) {
+      setShowResult(true);
+      setStartTest(true);
+    }
+  }, []); // searchParams를 의존성 배열에서 제거
+
   const handleChoice = (choiceIndex: number): void => {
     const nextResponses = { ...responses, [currentIndex]: choiceIndex };
     setResponses(nextResponses);
@@ -197,7 +254,12 @@ export default function RealisticMBTITest() {
     setCurrentIndex(nextIndex);
 
     if (nextIndex >= questions.length) {
+      const result = getResultType();
       setShowResult(true);
+      // URL 변경 전에 상태 업데이트
+      setTimeout(() => {
+        router.push(`/?result=${result}`);
+      }, 0);
     }
   };
 
@@ -206,6 +268,8 @@ export default function RealisticMBTITest() {
       setCurrentIndex(currentIndex - 1);
     } else {
       setStartTest(false);
+      setShowResult(false);
+      router.push('/');
     }
   };
 
@@ -234,9 +298,10 @@ export default function RealisticMBTITest() {
     setResponses({});
     setCurrentIndex(0);
     setStartTest(false);
+    router.push('/');
   };
 
-  const resultType = showResult ? getResultType() : '';
+  const resultType = showResult ? (getResultFromUrl() || getResultType()) : '';
 
   return (
     <div id="webcrumbs" className="w-full flex justify-center">
