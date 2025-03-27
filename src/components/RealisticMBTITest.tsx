@@ -44,18 +44,15 @@ const Header = () => (
 );
 
 const StartScreen = ({ onStart }: { onStart: () => void }) => (
-  <div className="max-w-2xl mx-auto p-6">
-    <Header />
-    <div className="bg-white rounded-2xl p-8 shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">테스트 시작하기</h2>
-      <p className="text-gray-600 mb-8">
-        이 테스트는 당신의 연애 스타일과 결핍을 분석하여 현실적인 MBTI 유형을 찾아줍니다.
-        약 3분 정도 소요됩니다.
-      </p>
-      <Button onClick={onStart} className="w-full !bg-purple-300 text-gray-800 hover:!bg-purple-700 transition">
-        테스트 시작하기
-      </Button>
-    </div>
+  <div className="bg-white rounded-2xl p-8 shadow-lg">
+    <h2 className="text-2xl font-bold text-gray-800 mb-6">테스트 시작하기</h2>
+    <p className="text-gray-600 mb-8">
+      이 테스트는 당신의 연애 스타일과 결핍을 분석하여 현실적인 MBTI 유형을 찾아줍니다.
+      약 3분 정도 소요됩니다.
+    </p>
+    <Button onClick={onStart} className="w-full !bg-purple-300 text-gray-800 hover:!bg-purple-700 transition">
+      테스트 시작하기
+    </Button>
   </div>
 );
 
@@ -70,31 +67,28 @@ const QuestionScreen = ({
   onChoice: (index: number) => void;
   onBack: () => void;
 }) => (
-  <div className="max-w-2xl mx-auto p-6">
-    <Header />
-    <div className="bg-white rounded-2xl p-8 shadow-lg">
-      <div className="flex justify-between items-center mb-6">
-        <Button onClick={onBack} className="text-gray-600 hover:text-gray-900">
-          ← 이전
+  <div className="bg-white rounded-2xl p-8 shadow-lg">
+    <div className="flex justify-between items-center mb-6">
+      <Button onClick={onBack} className="text-gray-600 hover:text-gray-900">
+        ← 이전
+      </Button>
+      <span className="text-sm text-gray-500">
+        {currentIndex + 1}/{questions.length}
+      </span>
+    </div>
+    <h2 className="text-2xl font-bold text-gray-800 mb-8">
+      {currentQuestion.category} 관련 질문
+    </h2>
+    <div className="space-y-4">
+      {currentQuestion.options.map((option: string, index: number) => (
+        <Button
+          key={index}
+          onClick={() => onChoice(index)}
+          className="w-full text-left !bg-white text-gray-800 hover:!bg-purple-100 transition"
+        >
+          {option}
         </Button>
-        <span className="text-sm text-gray-500">
-          {currentIndex + 1}/{questions.length}
-        </span>
-      </div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-8">
-        {currentQuestion.category} 관련 질문
-      </h2>
-      <div className="space-y-4">
-        {currentQuestion.options.map((option: string, index: number) => (
-          <Button
-            key={index}
-            onClick={() => onChoice(index)}
-            className="w-full text-left !bg-white text-gray-800 hover:!bg-purple-100 transition"
-          >
-            {option}
-          </Button>
-        ))}
-      </div>
+      ))}
     </div>
   </div>
 );
@@ -108,19 +102,16 @@ const ResultScreen = ({
   onReset: () => void;
   onShare: () => void;
 }) => (
-  <div className="max-w-2xl mx-auto p-6">
-    <Header />
-    <div className="bg-white rounded-2xl p-8 shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">당신의 현실 연애 MBTI</h2>
-      <div className="text-4xl font-bold text-purple-600 mb-8 text-center">{result}</div>
-      <div className="space-y-4">
-        <Button onClick={onShare} className="w-full !bg-purple-300 text-gray-800 hover:!bg-purple-700 transition">
-          결과 공유하기
-        </Button>
-        <Button onClick={onReset} className="w-full !bg-white text-gray-800 hover:!bg-purple-100 transition">
-          처음으로 돌아가기
-        </Button>
-      </div>
+  <div className="bg-white rounded-2xl p-8 shadow-lg">
+    <h2 className="text-2xl font-bold text-gray-800 mb-6">당신의 현실 연애 MBTI</h2>
+    <div className="text-4xl font-bold text-purple-600 mb-8 text-center">{result}</div>
+    <div className="space-y-4">
+      <Button onClick={onShare} className="w-full !bg-purple-300 text-gray-800 hover:!bg-purple-700 transition">
+        결과 공유하기
+      </Button>
+      <Button onClick={onReset} className="w-full !bg-white text-gray-800 hover:!bg-purple-100 transition">
+        처음으로 돌아가기
+      </Button>
     </div>
   </div>
 );
@@ -220,8 +211,9 @@ export default function RealisticMBTITest() {
   };
 
   return (
-    <div id="webcrumbs" className="w-full flex justify-center">
-      <div className="w-full max-w-2xl bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-6 font-sans">
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-2xl p-6">
+        <Header />
         {!startTest ? (
           <StartScreen onStart={() => setStartTest(true)} />
         ) : showResult ? (
