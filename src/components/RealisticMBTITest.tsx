@@ -40,7 +40,7 @@ const StartScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => (
     <div className="text-5xl mb-6">💘</div>
     <h1 className="text-3xl font-bold text-purple-800 mb-4">당신의 결핍은? 현실 연애 MBTI</h1>
     <p className="text-gray-700 text-lg leading-relaxed max-w-md mx-auto">
-      "돈이 없어서, 못생겨서, 예민해서 연애가 어려운 걸까?"
+      &ldquo;돈이 없어서, 못생겨서, 예민해서 연애가 어려운 걸까?&rdquo;
       <br />
       진짜 이유는 당신의 결핍 속에 숨어 있습니다.
       <br /><br />
