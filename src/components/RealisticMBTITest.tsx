@@ -142,7 +142,7 @@ export default function RealisticMBTITest() {
       setShowResult(true);
       setStartTest(true);
     }
-  }, []); // searchParams를 의존성 배열에서 제거
+  }, []);
 
   const handleChoice = (choiceIndex: number): void => {
     const nextResponses = { ...responses, [currentIndex]: choiceIndex };
@@ -153,10 +153,8 @@ export default function RealisticMBTITest() {
     if (nextIndex >= questions.length) {
       const result = getResultType();
       setShowResult(true);
-      // URL 변경 전에 상태 업데이트
-      setTimeout(() => {
-        router.push(`/?result=${result}`);
-      }, 0);
+      // URL 변경을 replace로 처리
+      window.history.replaceState({}, '', `/?result=${result}`);
     }
   };
 
@@ -166,7 +164,8 @@ export default function RealisticMBTITest() {
     } else {
       setStartTest(false);
       setShowResult(false);
-      router.push('/');
+      // URL 변경을 replace로 처리
+      window.history.replaceState({}, '', '/');
     }
   };
 
@@ -195,7 +194,8 @@ export default function RealisticMBTITest() {
     setResponses({});
     setCurrentIndex(0);
     setStartTest(false);
-    router.push('/');
+    // URL 변경을 replace로 처리
+    window.history.replaceState({}, '', '/');
   };
 
   const resultType = showResult ? (getResultFromUrl() || getResultType()) : '';
