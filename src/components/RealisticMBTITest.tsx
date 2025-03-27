@@ -65,7 +65,7 @@ const StartScreen: React.FC<{ onStart: () => void }> = ({ onStart }) => (
         경제적 안정감, 지적 자존감, 외모 인식, 성격 유형이 연애 관계에 미치는 영향을 연구한 결과를 바탕으로 제작되었습니다.
       </div>
     </details>
-    <Button onClick={onStart} className="mt-8 px-10 py-3 bg-purple-400 text-white rounded-md hover:bg-purple-700 transition">
+    <Button onClick={onStart} className="mt-8 px-10 py-3 bg-purple-300 text-white rounded-md hover:bg-purple-700 transition">
       시작하기
     </Button>
   </div>
@@ -147,7 +147,7 @@ const ResultScreen: React.FC<{
     </div>
     <Button
       onClick={onReset}
-      className="mt-10 px-8 py-4 bg-purple-400 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-lg"
+      className="mt-10 px-8 py-10 bg-purple-300 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-lg"
     >
       처음으로 돌아가기
     </Button>
